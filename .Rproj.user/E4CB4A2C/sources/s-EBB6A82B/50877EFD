@@ -1,0 +1,32 @@
+{
+    "id": "50877EFD",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1596506718755.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "expression": "energy_percent",
+        "caption": "energy_percent",
+        "totalObservations": 37,
+        "displayedObservations": 37,
+        "variables": 11,
+        "cacheKey": "EA69C74D",
+        "object": "energy_percent",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=energy_percent&cache_key=EA69C74D&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1596506595,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1596506718755,
+    "read_only": false,
+    "read_only_alternatives": []
+}

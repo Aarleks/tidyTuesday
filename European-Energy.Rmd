@@ -1,0 +1,109 @@
+---
+title: "European Energy"
+author: "Alex Norman"
+date: "04/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+My first TidyTuesday attempt!!
+
+OK - let's read the data in using the `tidytuesdayR` package.
+
+```{r message=FALSE, echo=FALSE}
+library(tidytuesdayR)
+
+euro_energy <- tidytuesdayR::tt_load(2020, week = 32)
+energy_types <- euro_energy$energy_types
+country_totals <- euro_energy$country_totals
+```
+
+This brings a list of two datasets into the global environment, which are then put into two separate dataframes.
+
+## Types of dataviz this dataset
+
+* Map with percent of renewable displayed by colour fill
+* Map with percent of renewable displayed by colour fill levels 
+* Barplot with percent of type displayed by colour fill
+* Georgios Karamanis' 2020-Wk8 fan-like graph https://github.com/gkaramanis/tidytuesday/tree/master/2020-week08
+    * A variant of this could be with the top 5 and bottom 5, coloured grey and green respectively
+* Georgios Karamanis' 2020-Wk7 filled hexes https://github.com/gkaramanis/tidytuesday/tree/master/2020-week07
+* 
+
+It seems that for many of these I need percentages, so they need to be created first. The `energy_types` dataframe has the type information needed. I am specifically interested in renewable energy; that is, as opposed to clean energy, which creates little to no greenhouse gas emissions, I want to look at energy that comes from renewable sources, such as sunlight, wind, water, and geothermal heat. So, the goal is to get a data frame for 2018 that summarises energy production by three factors - conventional thermal, nuclear, and renewable.
+
+```{r message=FALSE, echo=FALSE}
+library(tidyverse)
+library(janitor)
+
+# Narrow the data down to 2018 country observations of energy type
+latest_energy <- energy_types %>%
+  select(-level) %>%
+  mutate(country_name = case_when(country == "EL" ~ "Greece", country == "UK" ~ "United Kingdom", country == "BA" ~ "Bosnia and Herzegovina", TRUE ~ country_name)) %>%
+  group_by(country) %>%
+  pivot_longer(cols = c(`2016`,`2017`,`2018`), names_to = "year") %>%
+  pivot_wider(names_from = type, values_from = value) %>%
+  filter(year == 2018) 
+
+energy_percent <- latest_energy %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(total = sum(conventional_thermal, nuclear, hydro, wind, solar, geothermal, other, pumped_hydro_power),
+         across(where(is.numeric), ~ 100 * . / total)) %>%
+  ungroup() %>%
+  pivot_longer(names_to = "energy", values_to = "value", 
+               c(conventional_thermal, nuclear, hydro, wind, solar, geothermal, other, pumped_hydro_power)) %>%
+  mutate(energy = case_when(energy == "conventional_thermal" ~ "Conventional Thermal",
+                            energy == "nuclear" ~ "Nuclear",
+                            TRUE ~ "Renewable"),
+         energy = factor(energy, 
+                         levels = c("Conventional Thermal", "Nuclear", 
+                                    "Renewable"))) %>%
+  group_by(country_name, energy) %>%
+  summarise(percent = sum(value)) %>%
+  pivot_wider(names_from = energy, values_from = percent) %>%
+  arrange(desc(Renewable)) %>%
+  ungroup()
+
+```
+Now to make a plot! First, to get the top and bottom 5 countries by renewable energy production.
+
+```{r plot, message=FALSE, echo=FALSE}
+top_bot <- bind_rows(
+  slice_max(energy_percent, n = 5, order_by = Renewable),
+  arrange(slice_min(energy_percent, n = 5, order_by = Renewable), desc(Renewable)))
+  
+  
+ggplot(top_bot, mapping = aes(x = country_name, y = Renewable)) +
+  geom_bar(stat = "identity")
+
+
+```
+
+# Karamanis' Fan-Like Graphs
+
+For this visualisation I need to create percentages
+
+```{r message=FALSE, echo=FALSE}
+ggsave(here::here("2020-32", "plots", "temp",
+    paste0("energy-", format(Sys.time(), "%Y%m%d_%H%M%S"),
+    ".png")), dpi = 320, width = 9, height = 9)
+
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+food_co2 <- food_consumption %>% 
+  group_by(country) %>% 
+  summarise(co2 = sum(co2_emmission)) %>% 
+  slice_max(., n = 10, co2) %>% 
+  arrange(co2) %>% 
+  mutate(n = -4:5) %>% 
+  rowwise() %>%
+  mutate(
+    x = list(c(-10, 0, 0, -10)),
+    y = list(c(n*4 - 1.4, n*2 - 0.7, n*2 + 0.7, n*4 + 1.4))
+  ) 
+  unnest(cols = c(x, y))
+```

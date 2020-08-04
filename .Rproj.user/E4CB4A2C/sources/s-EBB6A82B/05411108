@@ -1,0 +1,32 @@
+{
+    "id": "05411108",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1596521735521.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "expression": "top_bot",
+        "caption": "top_bot",
+        "totalObservations": 47,
+        "displayedObservations": 47,
+        "variables": 4,
+        "cacheKey": "7E441D24",
+        "object": "top_bot",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=top_bot&cache_key=7E441D24&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1596521588,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1596521735521,
+    "read_only": false,
+    "read_only_alternatives": []
+}

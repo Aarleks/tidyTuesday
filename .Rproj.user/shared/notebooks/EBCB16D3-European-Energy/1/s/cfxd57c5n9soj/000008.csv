@@ -1,0 +1,18 @@
+"0","food_co2 <- food_consumption %>% 
+  group_by(country) %>% 
+  summarise(co2 = sum(co2_emmission)) %>% 
+  slice_max(., 10, co2) %>% 
+  arrange(co2) %>% 
+  mutate(n = -4:5) %>% 
+  rowwise() %>%
+  mutate(
+    x = list(c(-10, 0, 0, -10)),
+    y = list(c(n*4 - 1.4, n*2 - 0.7, n*2 + 0.7, n*4 + 1.4))
+  ) %>% 
+  unnest(cols = c(x, y))
+"
+"2","Error: Problem with `mutate()` input `n`.
+[31mx[39m Input `n` can't be recycled to size 1.
+[34mℹ[39m Input `n` is `-4:5`.
+[34mℹ[39m Input `n` must be size 1, not 10.
+"
