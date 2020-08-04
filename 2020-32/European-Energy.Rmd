@@ -87,25 +87,27 @@ top_bot <- top %>%
   ) %>% 
   unnest(cols = c(x, y))
   
+library(extrafont)
+font_import()
 ggplot(top_bot) +
-  geom_rect(aes(xmin = -44, ymin = n*4 - 1.4,
+  geom_rect(aes(xmin = -60, ymin = n*4 - 1.4,
                 xmax = -10, ymax = n*4 + 1.4), fill = "#548b54", color = NA) +
   geom_polygon(aes(x, y, group = n), fill = "#548b54", color = NA) +
   geom_rect(aes(xmin = 0, ymin = n*2 - 0.7,
                 xmax = percent, ymax = n*2 + 0.7), fill = "#548b54", color = NA) +
-  geom_text(aes(-42.5, n*4, label = country_name), family = "JetBrains Mono Bold", color = "white", hjust = 0, size = 8.5, check_overlap = TRUE) +
-  geom_text(aes(percent, n*2, label = paste(percent, "% ", sep = "")), family = "JetBrains Mono Medium", color = "white", hjust = 1, size = 4, check_overlap = TRUE) +
-  annotate("text", 85, 17, label = "European\nRenewable Energy Production", family = "BlexMono Nerd Font Mono Bold", color = "black", hjust = 1, size = 12, lineheight = 0.9) +
-  annotate("text", 1, -11.5, label = "Source: Eurostat Energy\nGraphic: Alex Norman", family = "BlexMono Nerd Font Mono Light", color = "black", hjust = 0, size = 4, lineheight = 0.9) +
-  scale_x_continuous(breaks = seq(0, 80, 20), labels = seq(0, 100, 25)) +
-  theme_minimal(base_family = "JetBrains Mono Medium") +
+  geom_text(aes(-58, n*4, label = country_name), family = "DejaVu Sans Mono", color = "white", hjust = 0, size = 8.5, check_overlap = TRUE) +
+  geom_text(aes(percent, n*2, label = paste(percent, "% ", sep = "")), family = "DejaVu Sans Mono", color = "white", hjust = 1, size = 4, check_overlap = TRUE) +
+  annotate("text", 110, 17, label = "European\nRenewable Energy\nProduction", family = "Noto Sans Black", color = "black", hjust = 1, size = 11, lineheight = 0.9) +
+  annotate("text", 12, -11.5, label = " Source: Eurostat Energy\nGraphic: Alex Norman", family = "Noto Sans Thin", color = "black", hjust = 0, size = 4, lineheight = 0.9) +
+  scale_x_continuous(breaks = seq(0, 100, 25), labels = seq(0, 100, 25)) +
+  theme_minimal(base_family = "DejaVu Sans Mono") +
   theme(
     axis.title.x = element_blank(),
-    axis.text.x = element_text(family = "JetBrains Mono Medium", size = 12),
+    axis.text.x = element_text(family = "DejaVu Sans Mono", size = 12),
     axis.title.y = element_blank(),
     axis.text.y = element_blank(),
     panel.grid.minor.x = element_blank(),
-    panel.grid.major.x = element_line(color = "black", size = 0.1),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1),
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
     plot.margin = margin(20, 20, 20, 20)
