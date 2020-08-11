@@ -34,54 +34,31 @@ thing <- words %>%
 thing %>%
   ggplot(aes(chap, fill = num_lines)) +
   geom_col(aes(y = num_lines), width = 0.6, position = position_dodge(0.1)) +
-  #geom_line(aes(y = imdb_rating)) +
-  #geom_col(aes(y = neg_lines), width = 0.2, position = position_dodge(0.1)) + 
   theme_avatar(text.font = "Slayer",
                title.font = "Slayer") +
   scale_fill_avatar(type = "continuous") +
   facet_grid(rows = vars(character)) +
-  theme(plot.title = element_markdown(size = 15,
-                                      hjust = 0),
-        plot.subtitle = element_markdown(hjust = 0),
+  geom_text(aes(-2.5, 15, label = character), family = "Slayer", size = 4) +
+  theme(plot.title = element_markdown(size = 20,
+                                      hjust = 0.06),
+        plot.subtitle = element_markdown(hjust = 0.1),
         plot.caption = element_text(margin = margin(t = 10)),
-        legend.position = "bottom",
-        legend.background = element_blank(),
-        legend.text = element_text(size = 10),
+        #panel.spacing.y = unit(1, "lines"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title.y = element_text(size = 11,
-                                    margin = margin(r = 10)),
+        #axis.title.y = element_text(size = 11,
+        #                            margin = margin(r = 10)),
+        axis.text.y = element_blank(),
         axis.title.x = element_text(size = 11,
                                     margin = margin(t = 10))) +
   labs(x = "Chapters", y = "Lines", 
-       title = "Lines of dialogue<br><b>Avatar: The Last Airbender</b>",
-       subtitle = "Aang's lines per chapter decrease while Zuko's increase",
-       caption = "#TidyTuesday | Alex Norman | Source: (appa) https://github.com/averyrobbins1/appa")
+       title = " <br>Lines of dialogue<br><b>  Avatar: The Last Airbender</b>",
+       subtitle = "Aang, Katara, and Sokka have fewer lines per chapter as the series progresses",
+       caption = "#TidyTuesday | Alex Norman | Source: (appa) https://github.com/averyrobbins1/appa") +
+  guides(fill = FALSE)
 
 ggsave(here::here("2020-33", "plots", "temp",
                   paste0("last-airbender_", format(Sys.time(), "%Y%m%d_%H%M%S"),
                          ".png")), dpi = 320, width = 9, height = 9)
-
-
-lines_plot <- function(data, speaker) {
-  colours <- case_when(speaker %in% c("Sokka","Katara") ~ "WaterTribe",
-                   speaker %in% c("Zuko","Iroh") ~ "FireNation",
-                   speaker == "Aang" ~ "AirNomads",
-                   speaker == "Toph" ~ "EarthKingdom")
-  
-  data %>%
-    filter(character == speaker) %>%
-    ggplot(aes(chap, fill = num_lines)) +
-    geom_col(aes(y = num_lines)) +
-    geom_col(aes(y = neg_lines)) + 
-    theme_avatar(text.font = "Slayer") +
-    scale_fill_avatar(palette = colours)
-}
-
-aang <- lines_plot(thing, "Aang")
-toph <- lines_plot(thing, "Toph")
-sokka <- lines_plot(thing, "Sokka")
-katara <- lines_plot(thing, "Katara")
-zuko <- lines_plot(thing, "Zuko")
-iroh <- lines_plot(thing, "Iroh")
-
-cowplot::plot_grid(aang, toph, sokka, katara, zuko, iroh, ncol = 1, align = "v")
